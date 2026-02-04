@@ -1,13 +1,14 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000/api';
+// Use production API URL deployed on Render
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://swd392-swagger-pages.onrender.com/api';
 
 const api = axios.create({
     baseURL: API_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
-    timeout: 10000,
+    timeout: 30000, // Increased timeout for Render cold starts
     withCredentials: false
 });
 
