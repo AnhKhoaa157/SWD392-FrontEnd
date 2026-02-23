@@ -99,6 +99,8 @@ export default function App() {
   /* ─── Auto-logout on browser close ─── */
   useEffect(() => {
     const handleBeforeUnload = () => {
+      // Chỉ logout khi đóng tab nếu KHÔNG có Remember Me
+      if (authService.isRemembered()) return;
       const user = authService.getCurrentUser();
       if (user?.token) {
         const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';

@@ -90,7 +90,7 @@ export function LoginPage({ onNavigate, onLogin }) {
     setError('');
     setLoading(true);
     try {
-      const user = await authService.login(email, password);
+      const user = await authService.login(email, password, rememberMe);
       if (loginRole === 'student' && user.role !== 'Student') {
         setError('This account is not a student account. Please use the Lecturer Portal tab.');
         setLoading(false);
@@ -324,20 +324,19 @@ export function LoginPage({ onNavigate, onLogin }) {
               }
             />
 
-            {/* Remember + Forgot */}
+            {/* Remember Me + Forgot Password */}
             <div className="flex items-center justify-between pt-0.5">
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex items-center gap-2 cursor-pointer" onClick={() => setRememberMe(!rememberMe)}>
                 <div
-                  className="relative w-4 h-4 rounded flex items-center justify-center flex-shrink-0 transition-all duration-200 cursor-pointer"
+                  className="relative w-4 h-4 rounded flex items-center justify-center flex-shrink-0 transition-all duration-200"
                   style={{
                     background: rememberMe ? 'linear-gradient(135deg,#F27125,#d96420)' : CHARCOAL,
                     border: `1.5px solid ${rememberMe ? '#F27125' : BORDER}`,
                     boxShadow: rememberMe ? '0 0 12px rgba(242,113,37,0.35)' : 'none',
-                  }}
-                  onClick={() => setRememberMe(!rememberMe)}>
+                  }}>
                   {rememberMe && <CheckSquare className="w-3 h-3 text-white" />}
                 </div>
-                <span className="text-sm text-gray-600 select-none" onClick={() => setRememberMe(!rememberMe)}>Remember me</span>
+                <span className="text-sm text-gray-600 select-none">Remember me</span>
               </label>
               <button
                 type="button"

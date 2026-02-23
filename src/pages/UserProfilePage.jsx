@@ -57,11 +57,6 @@ function AvatarSection({ user }) {
                     {initials}
                 </div>
             )}
-            <button
-                onClick={() => toast.info('Avatar upload coming soon!')}
-                className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center shadow-md hover:bg-gray-50 transition">
-                <Camera className="w-3.5 h-3.5 text-gray-600" />
-            </button>
         </div>
     );
 }
@@ -92,20 +87,27 @@ export function UserProfilePage({ onNavigate, onLogout }) {
         e.preventDefault();
         setSavingProfile(true);
         try {
-            // Call API to update profile
+            // Gọi API (chỉ gửi các field backend hỗ trợ)
             if (currentUser?.userId) {
                 await userService.updateUser(currentUser.userId, {
                     fullName: formData.fullName,
                     email: formData.email,
                 });
             }
-            // Update localStorage to keep session in sync
+            // Lưu tất cả các field vào localStorage
             const stored = authService.getCurrentUser();
-            localStorage.setItem('user', JSON.stringify({
+            const updated = {
                 ...stored,
                 fullName: formData.fullName,
                 email: formData.email,
-            }));
+                phone: formData.phone,
+                address: formData.address,
+                bio: formData.bio,
+            };
+            // Lưu vào đúng storage (remember me hay không)
+            const isRemembered = localStorage.getItem('rememberMe') === 'true';
+            const storage = isRemembered ? localStorage : sessionStorage;
+            storage.setItem('user', JSON.stringify(updated));
             setEditing(false);
             toast.success('Profile updated successfully!');
         } catch (err) {

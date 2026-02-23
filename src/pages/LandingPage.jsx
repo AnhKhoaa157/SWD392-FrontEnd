@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Brain, Users, Shield, ArrowRight, PlayCircle, Check, ChevronUp } from 'lucide-react';
+import { Brain, Users, Shield, ArrowRight, PlayCircle, Check, ChevronUp, Menu, X } from 'lucide-react';
 
 /* ── Back To Top Button ── */
 function BackToTop() {
@@ -28,6 +28,15 @@ function BackToTop() {
 }
 
 export function LandingPage({ onNavigate }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navLinks = [
+    { label: 'About', page: 'about' },
+    { label: 'Docs', page: 'docs' },
+    { label: 'Contact', page: 'contact' },
+    { label: 'FAQ', page: 'faq' },
+  ];
+
   return (
     <div className="min-h-screen bg-white">
       {/* BackToTop */}
@@ -42,47 +51,65 @@ export function LandingPage({ onNavigate }) {
             </div>
             <span className="font-bold text-xl">SWP Hub</span>
           </div>
+
+          {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-6">
-            <button
-              onClick={() => onNavigate('about')}
-              className="text-gray-700 hover:text-gray-900 font-medium transition"
-            >
-              About
-            </button>
-            <button
-              onClick={() => onNavigate('docs')}
-              className="text-gray-700 hover:text-gray-900 font-medium transition"
-            >
-              Docs
-            </button>
-            <button
-              onClick={() => onNavigate('contact')}
-              className="text-gray-700 hover:text-gray-900 font-medium transition"
-            >
-              Contact
-            </button>
-            <button
-              onClick={() => onNavigate('faq')}
-              className="text-gray-700 hover:text-gray-900 font-medium transition"
-            >
-              FAQ
-            </button>
+            {navLinks.map(({ label, page }) => (
+              <button key={page}
+                onClick={() => onNavigate(page)}
+                className="text-gray-700 hover:text-gray-900 font-medium transition">
+                {label}
+              </button>
+            ))}
           </div>
-          <div className="flex items-center gap-4">
+
+          {/* Desktop auth buttons */}
+          <div className="hidden md:flex items-center gap-4">
             <button
               onClick={() => onNavigate('login')}
-              className="text-gray-700 hover:text-gray-900 font-medium"
-            >
+              className="text-gray-700 hover:text-gray-900 font-medium">
               Sign In
             </button>
             <button
               onClick={() => onNavigate('register')}
-              className="bg-[#F27125] hover:bg-[#d96420] text-white px-6 py-2 rounded-lg font-semibold transition"
-            >
+              className="bg-[#F27125] hover:bg-[#d96420] text-white px-6 py-2 rounded-lg font-semibold transition">
               Get Started
             </button>
           </div>
+
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition"
+            onClick={() => setMobileMenuOpen(o => !o)}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}>
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
+
+        {/* Mobile dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 space-y-3 shadow-lg">
+            {navLinks.map(({ label, page }) => (
+              <button key={page}
+                onClick={() => { onNavigate(page); setMobileMenuOpen(false); }}
+                className="w-full text-left text-gray-700 hover:text-gray-900 font-medium py-2 border-b border-gray-50 transition">
+                {label}
+              </button>
+            ))}
+            <div className="flex flex-col gap-2 pt-2">
+              <button
+                onClick={() => { onNavigate('login'); setMobileMenuOpen(false); }}
+                className="w-full py-2.5 text-gray-700 font-semibold border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                Sign In
+              </button>
+              <button
+                onClick={() => { onNavigate('register'); setMobileMenuOpen(false); }}
+                className="w-full py-2.5 bg-[#F27125] hover:bg-[#d96420] text-white rounded-lg font-semibold transition">
+                Get Started
+              </button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}
@@ -391,8 +418,8 @@ export function LandingPage({ onNavigate }) {
               <h4 className="font-semibold text-white mb-3">About Us</h4>
               <ul className="space-y-2 text-sm">
                 <li><button onClick={() => onNavigate('about')} className="hover:text-white transition">Our Story</button></li>
-                <li><span className="text-gray-500 cursor-default">Team</span></li>
-                <li><span className="text-gray-500 cursor-default">Careers</span></li>
+                <li><span className="text-gray-600 cursor-not-allowed" title="Coming soon">Team</span></li>
+                <li><span className="text-gray-600 cursor-not-allowed" title="Coming soon">Careers</span></li>
               </ul>
             </div>
             <div>
@@ -406,9 +433,9 @@ export function LandingPage({ onNavigate }) {
             <div>
               <h4 className="font-semibold text-white mb-3">Legal</h4>
               <ul className="space-y-2 text-sm">
-                <li><span className="text-gray-500 cursor-default">Terms of Service</span></li>
-                <li><span className="text-gray-500 cursor-default">Privacy Policy</span></li>
-                <li><span className="text-gray-500 cursor-default">Cookie Policy</span></li>
+                <li><span className="text-gray-600 cursor-not-allowed" title="Coming soon">Terms of Service</span></li>
+                <li><span className="text-gray-600 cursor-not-allowed" title="Coming soon">Privacy Policy</span></li>
+                <li><span className="text-gray-600 cursor-not-allowed" title="Coming soon">Cookie Policy</span></li>
               </ul>
             </div>
           </div>

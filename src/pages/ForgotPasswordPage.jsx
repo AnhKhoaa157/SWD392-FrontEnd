@@ -347,11 +347,13 @@ export function ForgotPasswordPage({ onNavigate }) {
                 </p>
               </div>
 
-              <div className="mb-5 px-4 py-3 rounded-xl text-xs flex items-center gap-2.5"
-                style={{ background: 'rgba(242,113,37,0.07)', border: '1px solid rgba(242,113,37,0.15)', color: '#9ca3af' }}>
-                <span className="text-base">💡</span>
-                <span><strong className="text-[#F27125]">Dev mode:</strong> Check backend console for the OTP</span>
-              </div>
+              {import.meta.env.DEV && (
+                <div className="mb-5 px-4 py-3 rounded-xl text-xs flex items-center gap-2.5"
+                  style={{ background: 'rgba(242,113,37,0.07)', border: '1px solid rgba(242,113,37,0.15)', color: '#9ca3af' }}>
+                  <span className="text-base">💡</span>
+                  <span><strong className="text-[#F27125]">Dev mode:</strong> Check backend console for the OTP</span>
+                </div>
+              )}
 
               {error && (
                 <div className="mb-4 px-4 py-3 rounded-xl text-sm flex items-start gap-2.5"
@@ -435,11 +437,19 @@ export function ForgotPasswordPage({ onNavigate }) {
                 </div>
               </div>
               <h1 className="text-3xl font-extrabold text-white mb-2 tracking-tight">Password Reset!</h1>
-              <p className="text-gray-600 text-sm mb-8">Your password has been updated. Redirecting to login...</p>
-              <div className="w-full h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
+              <p className="text-gray-600 text-sm mb-6">Your password has been updated. Redirecting to login...</p>
+              <div className="w-full h-1 rounded-full overflow-hidden mb-6" style={{ background: 'rgba(255,255,255,0.07)' }}>
                 <div className="h-full rounded-full"
                   style={{ background: 'linear-gradient(90deg,#F27125,#f59e0b)', animation: 'progress 3s linear forwards' }} />
               </div>
+              <button
+                onClick={() => onNavigate('login', { replace: true })}
+                className="text-sm font-semibold transition-colors duration-200"
+                style={{ color: '#F27125' }}
+                onMouseEnter={e => e.currentTarget.style.color = '#f59e0b'}
+                onMouseLeave={e => e.currentTarget.style.color = '#F27125'}>
+                Sign In Now →
+              </button>
             </div>
           )}
 

@@ -1,5 +1,9 @@
 import api from '../config/api.config';
 
+/* ── Helper: chọn storage dựa theo Remember Me flag ── */
+const getStorage = () =>
+    localStorage.getItem('rememberMe') === 'true' ? localStorage : sessionStorage;
+
 const authService = {
     /**
      * Register new user
@@ -36,7 +40,7 @@ const authService = {
      * @param {string} password - User password
      * @returns {Promise<Object>} User data with token
      */
-    login: async (email, password) => {
+    login: async (email, password, rememberMe = false) => {
         try {
             const response = await api.post('/auth/login', { email, password });
 
@@ -46,7 +50,13 @@ const authService = {
                     token: response.data.accessToken,
                     refreshToken: response.data.refreshToken
                 };
-                localStorage.setItem('user', JSON.stringify(userData));
+                // Lưu flag trước để getStorage() dùng đúng
+                localStorage.setItem('rememberMe', String(rememberMe));
+                // Lưu user vào đúng storage
+                getStorage().setItem('user', JSON.stringify(userData));
+                // Đảm bảo storage kia không còn user cũ
+                if (rememberMe) sessionStorage.removeItem('user');
+                else localStorage.removeItem('user');
                 return userData;
             }
 
@@ -62,7 +72,8 @@ const authService = {
      */
     refreshToken: async () => {
         try {
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const storage = getStorage();
+            const user = JSON.parse(storage.getItem('user') || '{}');
 
             if (!user.refreshToken) {
                 throw new Error('No refresh token available');
@@ -77,14 +88,13 @@ const authService = {
                     ...user,
                     token: response.data.accessToken
                 };
-                localStorage.setItem('user', JSON.stringify(userData));
+                storage.setItem('user', JSON.stringify(userData));
                 return userData;
             }
 
             throw new Error(response.message || 'Token refresh failed');
         } catch (error) {
             console.error('Refresh token error:', error);
-            // If refresh fails, logout user
             authService.logout();
             throw error;
         }
@@ -210,6 +220,8 @@ const authService = {
             await api.post('/auth/logout');
         } catch { /* ignore */ } finally {
             localStorage.removeItem('user');
+            sessionStorage.removeItem('user');
+            localStorage.removeItem('rememberMe');
         }
     },
 
@@ -238,11 +250,19 @@ const authService = {
      */
     getCurrentUser: () => {
         try {
-            return JSON.parse(localStorage.getItem('user') || 'null');
+            // Ưu tiên sessionStorage (không remember), fallback localStorage (remember)
+            const raw = sessionStorage.getItem('user') || localStorage.getItem('user');
+            return JSON.parse(raw || 'null');
         } catch {
             return null;
         }
-    }
+    },
+
+    /**
+     * Check if user chose "Remember Me"
+     * @returns {boolean}
+     */
+    isRemembered: () => localStorage.getItem('rememberMe') === 'true'
 };
 
 export default authService;
