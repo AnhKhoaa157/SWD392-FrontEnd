@@ -1,8 +1,38 @@
-import { Brain, Users, Shield, ArrowRight, PlayCircle, Check } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Brain, Users, Shield, ArrowRight, PlayCircle, Check, ChevronUp } from 'lucide-react';
+
+/* ── Back To Top Button ── */
+function BackToTop() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 300);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  return (
+    <button
+      onClick={scrollToTop}
+      aria-label="Back to top"
+      className={[
+        'fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full shadow-lg flex items-center justify-center transition-all duration-300',
+        'bg-[#F27125] hover:bg-[#d96420] text-white',
+        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none',
+      ].join(' ')}>
+      <ChevronUp className="w-5 h-5" />
+    </button>
+  );
+}
 
 export function LandingPage({ onNavigate }) {
   return (
     <div className="min-h-screen bg-white">
+      {/* BackToTop */}
+      <BackToTop />
+
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-gray-200 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -20,6 +50,12 @@ export function LandingPage({ onNavigate }) {
               About
             </button>
             <button
+              onClick={() => onNavigate('docs')}
+              className="text-gray-700 hover:text-gray-900 font-medium transition"
+            >
+              Docs
+            </button>
+            <button
               onClick={() => onNavigate('contact')}
               className="text-gray-700 hover:text-gray-900 font-medium transition"
             >
@@ -33,13 +69,13 @@ export function LandingPage({ onNavigate }) {
             </button>
           </div>
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={() => onNavigate('login')}
               className="text-gray-700 hover:text-gray-900 font-medium"
             >
               Sign In
             </button>
-            <button 
+            <button
               onClick={() => onNavigate('register')}
               className="bg-[#F27125] hover:bg-[#d96420] text-white px-6 py-2 rounded-lg font-semibold transition"
             >
@@ -66,14 +102,16 @@ export function LandingPage({ onNavigate }) {
           </p>
 
           <div className="flex items-center justify-center gap-4 mb-16">
-            <button 
+            <button
               onClick={() => onNavigate('register')}
               className="bg-[#F27125] hover:bg-[#d96420] text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-2 transition shadow-lg hover:shadow-xl"
             >
               Get Started
               <ArrowRight className="w-5 h-5" />
             </button>
-            <button className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-2 transition border border-white/30">
+            <button className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-2 transition border border-white/30"
+              onClick={() => onNavigate('docs')}
+            >
               <PlayCircle className="w-5 h-5" />
               View Documentation
             </button>
@@ -94,7 +132,7 @@ export function LandingPage({ onNavigate }) {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Actual UI Screenshot */}
                 <div className="bg-white">
                   <div className="grid grid-cols-[240px_1fr] h-[500px]">
@@ -325,7 +363,7 @@ export function LandingPage({ onNavigate }) {
           <p className="text-xl text-gray-300 mb-8">
             Join thousands of FPT students already using SWP Hub to ace their projects.
           </p>
-          <button 
+          <button
             onClick={() => onNavigate('register')}
             className="bg-[#F27125] hover:bg-[#d96420] text-white px-10 py-4 rounded-lg font-bold text-lg transition shadow-lg hover:shadow-xl"
           >
@@ -353,8 +391,8 @@ export function LandingPage({ onNavigate }) {
               <h4 className="font-semibold text-white mb-3">About Us</h4>
               <ul className="space-y-2 text-sm">
                 <li><button onClick={() => onNavigate('about')} className="hover:text-white transition">Our Story</button></li>
-                <li><a href="#" className="hover:text-white transition">Team</a></li>
-                <li><a href="#" className="hover:text-white transition">Careers</a></li>
+                <li><span className="text-gray-500 cursor-default">Team</span></li>
+                <li><span className="text-gray-500 cursor-default">Careers</span></li>
               </ul>
             </div>
             <div>
@@ -362,15 +400,15 @@ export function LandingPage({ onNavigate }) {
               <ul className="space-y-2 text-sm">
                 <li><button onClick={() => onNavigate('contact')} className="hover:text-white transition">Support</button></li>
                 <li><button onClick={() => onNavigate('faq')} className="hover:text-white transition">FAQ</button></li>
-                <li><a href="#" className="hover:text-white transition">Email Us</a></li>
+                <li><a href="mailto:support@swphub.fpt.edu.vn" className="hover:text-white transition">Email Us</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold text-white mb-3">Legal</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-white transition">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition">Cookie Policy</a></li>
+                <li><span className="text-gray-500 cursor-default">Terms of Service</span></li>
+                <li><span className="text-gray-500 cursor-default">Privacy Policy</span></li>
+                <li><span className="text-gray-500 cursor-default">Cookie Policy</span></li>
               </ul>
             </div>
           </div>
